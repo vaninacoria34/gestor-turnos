@@ -1,0 +1,17 @@
+{
+  "name": "gestor-turnos",
+  "private": true,
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace server\" \"npm run dev --workspace web\"",
+    "build": "npm run build --workspace web",
+    "server": "npm run dev --workspace server",
+    "web": "npm run dev --workspace web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
