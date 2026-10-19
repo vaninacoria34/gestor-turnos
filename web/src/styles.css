@@ -34,6 +34,10 @@ h1, h2, h3, h4 { margin: 0; }
 .sidebar-footer div { display: flex; flex-direction: column; min-width: 0; }
 .sidebar-footer small { color: #738097; }
 .main-content { min-width: 0; padding: 24px 28px 40px; max-width: 1900px; width: 100%; margin: 0 auto; }
+.brand-footer { display: flex; justify-content: center; align-items: center; gap: .4rem 1rem; flex-wrap: wrap; margin-top: 2rem; padding: 1rem 0 0; border-top: 1px solid #e1e8ef; color: #738097; font-size: .78rem; text-align: center; }
+.brand-footer a { color: #008486; font-weight: 600; text-decoration: none; }
+.brand-footer a:hover { text-decoration: underline; }
+.auth-shell .brand-footer { border-top: 0; margin-top: 1rem; padding-top: 0; }
 .topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: 24px; }
 .topbar h2 { font-size: 1.65rem; letter-spacing: -.04em; margin: 4px 0; }
 .topbar small { color: #738097; }

@@ -52,6 +52,17 @@ function shiftDate(date, amount) {
   return shifted;
 }
 
+function BrandFooter() {
+  return (
+    <footer className="brand-footer">
+      <span>Alfha Soluciones Digitales · Vanina Coria</span>
+      <a href="https://wa.me/5493425238984" target="_blank" rel="noreferrer">
+        WhatsApp · +54 9 342 523-8984
+      </a>
+    </footer>
+  );
+}
+
 async function apiRequest(path, options = {}, token) {
   const headers = { ...(options.headers || {}) };
 
@@ -754,6 +765,7 @@ export default function App() {
           <button type="submit" disabled={loading}>{loading ? 'Ingresando…' : 'Iniciar sesión'}</button>
           {message && <small>{message}</small>}
         </form>
+        <BrandFooter />
       </div>
     );
   }
@@ -1351,6 +1363,7 @@ export default function App() {
         </div>
       )}
       </main>
+      <BrandFooter />
     </div>
   );
 }
