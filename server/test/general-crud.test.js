@@ -82,7 +82,25 @@ test('catálogo universal: migración, CRUD, renombrado, asignaciones y eliminac
   assert.equal((await request('/shifts', 'POST', { employeeId: 'legacy-employee', date: '2026-11-01', startTime: '15:00', endTime: '17:00' })).status, 400);
   assert.equal((await request(`/shifts/${manual.body.id}`, 'DELETE')).status, 200);
   assert.equal((await request('/shifts')).body.length, 0);
-  assert.equal((await request('/employees/legacy-employee', 'DELETE')).status, 200);
-  assert.equal((await request('/shiftTypes/legacy-shift', 'DELETE')).status, 200);
-  assert.equal((await request(`/job-functions/${created.body.id}`, 'DELETE')).status, 200);
+  const secondFunction = await request('/job-functions', 'POST', { name: 'Depósito' });
+  const secondType = await request('/shiftTypes', 'POST', {
+    name: 'Preparación de pedidos',
+    startTime: '14:00',
+    endTime: '18:00',
+    requiredEmployees: 1,
+    jobFunctionId: secondFunction.body.id,
+  });
+  const multiFunctionEmployee = await request('/employees/legacy-employee', 'PUT', { jobFunctionIds: [created.body.id, secondFunction.body.id], allowedDoubleShifts: true });
+  assert.deepEqual(multiFunctionEmployee.body.jobFunctionIds, [created.body.id, secondFunction.body.id]);
+  assert.deepEqual(multiFunctionEmployee.body.jobFunctions, ['Logística', 'Depósito']);
+  assert.equal((await request(`/job-functions/${secondFunction.body.id}`, 'DELETE')).status, 409);
+  const crossFunctionProposal = await request('/schedules/generate', 'POST', { period: 'month', month: '2026-11' });
+  assert.ok(crossFunctionProposal.body.assignments.some((item) => item.shiftTypeId === secondType.body.id && item.jobFunctionId === secondFunction.body.id));
+  assert.equal((await request('/employees/legacy-employee', 'DELETE')).status, 409);
+  assert.equal((await request('/shiftTypes/legacy-shift', 'DELETE')).status, 409);
+  assert.equal((await request(`/shiftTypes/${secondType.body.id}`, 'DELETE')).status, 409);
+  assert.equal((await request(`/job-functions/${created.body.id}`, 'DELETE')).status, 409);
+  assert.equal((await request(`/job-functions/${secondFunction.body.id}`, 'DELETE')).status, 409);
+  assert.equal((await request('/employees/legacy-employee', 'PUT', { active: false })).status, 200);
+  assert.ok((await request('/schedules/proposals')).body.some((p) => p.assignments.some((a) => a.employeeId === 'legacy-employee')));
 });

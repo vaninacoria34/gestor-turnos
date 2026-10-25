@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { generateMonthProposal, getMonthDates, getWeekDates, matchesFunction } = require('../src/lib/schedule');
+const { generateMonthProposal, generateWeekProposal, getMonthDates, getWeekDates, matchesFunction } = require('../src/lib/schedule');
 
 test('el mes incluye todos y solo sus días, incluidos febrero y cambios de año', () => {
   for (const [month, length] of [['2024-02', 29], ['2026-02', 28], ['2026-04', 30], ['2026-12', 31], ['2027-01', 31]]) {
@@ -35,6 +35,108 @@ test('la generación mensual respeta funciones, horarios y descansos en las cinc
   assert.ok(proposal.assignments.every((item) => matchesFunction(employees.find((employee) => employee.id === item.employeeId), shiftTypes.find((type) => type.id === item.shiftTypeId))));
   assert.ok(proposal.assignments.every((item) => item.jobFunction && item.date.startsWith('2026-10')));
   assert.ok(proposal.warnings.every((item) => item.jobFunction === 'Cocina / Elaboración'));
+});
+
+test('un empleado con varias funciones puede cubrir turnos de cada una', () => {
+  const crossTrained = {
+    id: 'cross-trained',
+    name: 'Alex',
+    jobFunctionIds: ['kitchen-id', 'service-id'],
+    jobFunctions: ['Cocina / Elaboración', 'Atención al público'],
+  };
+  const proposal = generateMonthProposal({
+    month: '2026-10',
+    employees: [crossTrained],
+    shiftTypes: [
+      { ...shiftTypes[0], id: 'kitchen-shift', jobFunctionId: 'kitchen-id' },
+      { ...shiftTypes[1], id: 'service-shift', jobFunctionId: 'service-id' },
+    ],
+  });
+
+  assert.ok(proposal.assignments.some((item) => item.shiftTypeId === 'kitchen-shift' && item.jobFunctionId === 'kitchen-id'));
+  assert.ok(proposal.assignments.some((item) => item.shiftTypeId === 'service-shift' && item.jobFunctionId === 'service-id'));
+});
+
+test('prioriza turnos fijos semanales y conserva el descanso configurado', () => {
+  const kitchenEmployee = {
+    id: 'vanina',
+    name: 'Vanina',
+    jobFunctionIds: ['kitchen-id'],
+    jobFunctions: ['Cocina'],
+    restDays: ['sunday'],
+    fixedShiftTypeIdsByDay: Object.fromEntries(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].map((day) => [day, 'kitchen-shift'])),
+  };
+  const proposal = generateMonthProposal({
+    month: '2026-10',
+    employees: [kitchenEmployee],
+    shiftTypes: [{ id: 'kitchen-shift', name: 'Cocina mañana', jobFunctionId: 'kitchen-id', jobFunction: 'Cocina', startTime: '08:00', endTime: '16:00', requiredEmployees: 1 }],
+  });
+  const assignments = proposal.assignments.filter((item) => item.employeeId === kitchenEmployee.id);
+  assert.equal(assignments.length, 27);
+  assert.ok(assignments.every((item) => item.notes.startsWith('Turno fijo automático')));
+  assert.ok(assignments.every((item) => new Date(`${item.date}T12:00:00Z`).getUTCDay() !== 0));
+});
+
+test('no cubre sectores distintos ni turnos parciales como si fueran puestos configurados', () => {
+  const proposal = generateMonthProposal({
+    month: '2026-10',
+    employees: [
+      { id: 'service', jobFunctionId: 'service-id', restDays: ['thursday'] },
+      { id: 'kitchen', jobFunctionId: 'kitchen-id' },
+    ],
+    shiftTypes: [
+      { id: 'service-shift', name: 'Tarde', jobFunctionId: 'service-id', jobFunction: 'Atención', startTime: '14:00', endTime: '22:00', requiredEmployees: 2 },
+    ],
+    manualShifts: [
+      { id: 'wrong-sector', employeeId: 'kitchen', date: '2026-10-01', startTime: '14:00', endTime: '22:00' },
+      { id: 'partial', employeeId: 'service', date: '2026-10-02', startTime: '14:00', endTime: '18:00' },
+    ],
+  });
+  const wrongSectorWarning = proposal.warnings.find((item) => item.date === '2026-10-01');
+  const partialWarning = proposal.warnings.find((item) => item.date === '2026-10-02');
+  assert.equal(wrongSectorWarning.missing, 2);
+  assert.equal(partialWarning.missing, 2);
+  assert.ok(wrongSectorWarning.message.includes('14:00–22:00'));
+});
+
+test('verifica una semana con horario fijo, descansos, sectores y faltantes reales', () => {
+  const employees = [
+    { id: 'vanina', name: 'Vanina', jobFunctionIds: ['kitchen'], restDays: ['sunday'], fixedShiftTypeIdsByDay: Object.fromEntries(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].map((day) => [day, 'kitchen-am'])) },
+    { id: 'brisa', name: 'Brisa', jobFunctionIds: ['service'], restDays: ['monday'] },
+    { id: 'lautaro', name: 'Lautaro', jobFunctionIds: ['service', 'kitchen'], restDays: ['tuesday'] },
+    { id: 'denis', name: 'Denis', jobFunctionIds: ['service', 'kitchen'], restDays: ['wednesday'] },
+    { id: 'santino', name: 'Santino', jobFunctionIds: ['service'], restDays: ['thursday', 'friday'] },
+    { id: 'caro', name: 'Caro', jobFunctionIds: ['service'], restDays: ['friday'] },
+    { id: 'lujan', name: 'Luján', jobFunctionIds: ['service', 'kitchen'], restDays: ['sunday'], allowedDoubleShifts: true },
+  ];
+  const shiftTypes = [
+    { id: 'service-pm', name: 'Tarde', jobFunctionId: 'service', jobFunction: 'Atención al público', startTime: '14:00', endTime: '22:00', requiredEmployees: 2 },
+    { id: 'service-am', name: 'Mañana', jobFunctionId: 'service', jobFunction: 'Atención al público', startTime: '08:00', endTime: '16:00', requiredEmployees: 2 },
+    { id: 'kitchen-am', name: 'Mañana', jobFunctionId: 'kitchen', jobFunction: 'Cocina y Elaboración', startTime: '08:00', endTime: '16:00', requiredEmployees: 2 },
+  ];
+  const sunday = { id: 'sunday', name: 'Domingo', mode: 'weekday', weekday: 'sunday', active: true, restOthers: true, requirements: [{ shiftTypeId: 'service-am', requiredEmployees: 2 }, { shiftTypeId: 'service-pm', requiredEmployees: 2 }] };
+  const proposal = generateWeekProposal({ employees, shiftTypes, specialDays: [sunday], weekStart: '2026-10-12' });
+
+  const vaninaAssignments = proposal.assignments.filter((item) => item.employeeId === 'vanina');
+  assert.deepEqual(vaninaAssignments.map((item) => item.date), proposal.dates.slice(0, 6));
+  assert.ok(vaninaAssignments.every((item) => item.shiftTypeId === 'kitchen-am'));
+  assert.ok(proposal.assignments.some((item) => item.employeeId === 'lujan' && item.shiftTypeId === 'service-pm'));
+  for (const date of proposal.dates) {
+    const daily = proposal.assignments.filter((item) => item.date === date);
+    for (const shiftTypeId of ['service-am', 'service-pm']) {
+      assert.equal(daily.filter((item) => item.shiftTypeId === shiftTypeId).length, 2, `${date} ${shiftTypeId}`);
+    }
+    for (const [index, assignment] of daily.entries()) {
+      assert.ok(daily.slice(index + 1).every((other) => (
+        other.employeeId !== assignment.employeeId
+        || assignment.endTime <= other.startTime
+        || other.endTime <= assignment.startTime
+      )), `${assignment.employeeName} has overlapping turns on ${date}`);
+    }
+  }
+  const fridayKitchenWarning = proposal.warnings.find((item) => item.date === '2026-10-16' && item.shiftTypeId === 'kitchen-am');
+  assert.equal(fridayKitchenWarning.missing, 1);
+  assert.match(fridayKitchenWarning.message, /TURNO SIN CUBRIR.*Cocina y Elaboración.*08:00–16:00/);
 });
 
 test('un sector sin personal no toma empleados de otro sector', () => {
@@ -94,9 +196,10 @@ test('la API mensual guarda sectores, confirma y edita sin mezclar funciones', a
   assert.equal(edited.body.status, 'proposed');
   assert.equal(edited.body.assignments.length, 27);
   assert.equal((await request('/shifts', 'POST', { employeeId: employee.id, shiftTypeId: service.id, date: '2026-10-01', startTime: '14:00', endTime: '18:00' })).status, 400);
-  await request('/shifts', 'POST', { employeeId: employee.id, date: '2026-10-05', startTime: '08:00', endTime: '12:00' });
+  await request(`/employees/${employee.id}`, 'PUT', { allowedDoubleShifts: true });
+  assert.equal((await request('/shifts', 'POST', { employeeId: employee.id, date: '2026-10-06', startTime: '15:00', endTime: '18:00' })).status, 201);
   const coverage = (await request('/coverage?month=2026-10&jobFunction=Cocina%20%2F%20Elaboraci%C3%B3n')).body.coverage;
-  assert.ok(coverage.some((item) => item.date === '2026-10-05'));
+  assert.ok(coverage.some((item) => item.date === '2026-10-06'));
   assert.ok(coverage.every((item) => item.date.startsWith('2026-10') && item.employees.every((person) => person.jobFunction === employee.jobFunction)));
   assert.equal((await request('/coverage?month=2026-11')).body.coverage.length, 0);
 });

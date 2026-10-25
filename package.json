@@ -6,6 +6,7 @@
     "web"
   ],
   "scripts": {
+    "test": "node --test server/test/",
     "dev": "concurrently \"npm run dev --workspace server\" \"npm run dev --workspace web\"",
     "build": "npm run build --workspace web",
     "server": "npm run dev --workspace server",

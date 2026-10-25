@@ -90,7 +90,8 @@ test('CRUD de reglas y APIs de calendario conservan las propuestas y aplican los
     return { status: response.status, body: await response.json() };
   }
   assert.equal((await fetch(base + '/special-days')).status, 401);
-  for (const employee of employees) await request('/employees', 'POST', employee);
+  const savedEmployees = [];
+  for (const employee of employees) savedEmployees.push((await request('/employees', 'POST', employee)).body);
   for (const type of shiftTypes) await request('/shiftTypes', 'POST', type);
   await request('/shiftTypes', 'POST', { ...shiftTypes[0], id: 'alias', name: 'Otro turno de mañana' });
   const created = await request('/special-days', 'POST', sunday);
@@ -111,7 +112,7 @@ test('CRUD de reglas y APIs de calendario conservan las propuestas y aplican los
   const daily = proposal.assignments.filter((item) => item.date === '2026-10-04');
   assert.equal(daily.length, 4);
   assert.equal(new Set(daily.map((item) => item.employeeId)).size, 4);
-  const unused = employees.find((employee) => !daily.some((item) => item.employeeId === employee.id));
+  const unused = savedEmployees.find((employee) => !daily.some((item) => item.employeeId === employee.id));
   const excess = await request('/shifts', 'POST', { employeeId: unused.id, date: '2026-10-04', startTime: '08:00', endTime: '12:00' });
   assert.equal(excess.status, 400);
   assert.match(excess.body.message, /dotación/);
@@ -135,7 +136,8 @@ test('CRUD de reglas y APIs de calendario conservan las propuestas y aplican los
   const ordinary = (await request('/schedules/generate', 'POST', { month: '2026-11' })).body;
   assert.equal(ordinary.assignments.filter((item) => item.date === '2026-11-01' && item.shiftTypeId === 'am').length, 4);
   assert.equal((await request(`/special-days/${rule.id}`, 'DELETE')).status, 200);
-  assert.equal((await request('/shiftTypes/am', 'DELETE')).status, 200);
+  assert.equal((await request('/shiftTypes/am', 'DELETE')).status, 409);
+  assert.equal((await request('/shiftTypes/am', 'PUT', { active: false })).body.active, false);
   assert.equal((await request(`/special-days/${rule.id}`)).status, 404);
   assert.equal((await request(`/special-days/${closed.body.id}`, 'DELETE')).status, 200);
   assert.equal((await request('/special-days')).body.length, 0);

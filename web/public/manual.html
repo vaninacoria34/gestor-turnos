@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manual completo del Gestor de Turnos: empleados, sectores, horarios, descansos, calendario y planificación.">
+  <title>Manual de uso · Gestor de Turnos · ALFHA Soluciones Digitales</title>
+  <style>
+    :root { color-scheme: light; font-family: 'Segoe UI', system-ui, sans-serif; color: #213b2d; background: #f1f6f1; line-height: 1.7; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #236b45; text-underline-offset: 3px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid #28784f; outline-offset: 4px; }
+    .skip { position: absolute; left: 16px; top: -80px; background: white; padding: 8px; }
+    .skip:focus { top: 8px; }
+    header, .layout, footer { max-width: 1160px; margin: auto; padding: 28px; }
+    header { padding-top: 48px; }
+    .eyebrow { color: #28784f; font-size: .8rem; letter-spacing: .08em; font-weight: 700; text-transform: uppercase; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 12px 0; }
+    h2 { font-size: 1.45rem; line-height: 1.35; margin-top: 0; }
+    h3 { font-size: 1.05rem; margin-bottom: 4px; }
+    p { margin: 10px 0 16px; }
+    li { margin: 7px 0; }
+    .actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 20px; }
+    button { background: #28784f; color: white; border: 0; padding: 12px 18px; border-radius: 8px; font: inherit; cursor: pointer; }
+    button:hover { background: #1f633f; }
+    .layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); gap: 26px; align-items: start; padding-top: 0; }
+    nav { position: sticky; top: 20px; max-height: calc(100dvh - 40px); overflow: auto; background: white; border: 1px solid #dce7dd; border-radius: 12px; padding: 20px; font-size: .88rem; }
+    nav ol { padding-left: 20px; margin-bottom: 0; }
+    nav a { text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    main { min-width: 0; }
+    section { padding: 28px; background: white; border: 1px solid #dce7dd; border-radius: 12px; margin-bottom: 20px; scroll-margin-top: 20px; overflow-wrap: anywhere; }
+    .note { padding: 14px 18px; background: #edf5ee; border-left: 4px solid #28784f; border-radius: 4px; }
+    .attention { background: #fff7e4; border-left-color: #af791b; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .92rem; }
+    th, td { padding: 10px 12px; border: 1px solid #dce7dd; text-align: left; vertical-align: top; }
+    th { background: #edf5ee; }
+    code { background: #f1f6f1; border-radius: 4px; padding: 2px 5px; font-size: .9em; }
+    footer { text-align: center; color: #52685a; padding-bottom: 44px; }
+    footer strong { color: #236b45; }
+    @media (max-width: 850px) { header, .layout, footer { padding: 20px; } .layout { grid-template-columns: minmax(0, 1fr); padding-top: 0; } nav { position: static; max-height: none; } nav ol { columns: 2; column-gap: 24px; } nav li { break-inside: avoid; } section { padding: 22px; } }
+    @media (max-width: 480px) { nav ol { columns: 1; } }
+    @media print { :root { background: white; color: black; font-size: 10.5pt; } header, .layout, footer { max-width: none; padding: 0; } .layout { display: block; } nav, .actions, .skip { display: none; } section { border: 0; border-radius: 0; padding: 12px 0; margin: 0; } h2, h3 { break-after: avoid; } tr, .note { break-inside: avoid; } a { color: inherit; } footer { border-top: 1px solid #bbb; margin-top: 24px; padding-top: 16px; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#contenido">Ir al contenido</a>
+  <header>
+    <div class="eyebrow">ALFHA Soluciones Digitales · Documentación 2026</div>
+    <h1>Manual del Gestor de Turnos</h1>
+    <p>Guía para organizar empleados, sectores, horarios y descansos; generar propuestas y hacer cambios puntuales desde el calendario.</p>
+    <p>Versión de la guía: 24 de octubre de 2026. Los ejemplos son orientativos: reemplazá nombres, horas y cantidades por los de tu equipo.</p>
+    <div class="actions"><button type="button" onclick="window.print()">Imprimir o guardar como PDF</button><a href="./" target="_top">Abrir el sistema</a></div>
+  </header>
+  <div class="layout">
+    <nav aria-label="Índice del manual">
+      <strong>Contenido</strong>
+      <ol>
+        <li><a href="#inicio">Ingreso y recorrido</a></li>
+        <li><a href="#conceptos">Conceptos importantes</a></li>
+        <li><a href="#preparacion">Primera configuración</a></li>
+        <li><a href="#sectores">Funciones y sectores</a></li>
+        <li><a href="#tipos">Tipos de turno</a></li>
+        <li><a href="#empleados">Empleados y preferencias</a></li>
+        <li><a href="#dias">Días y horarios individuales</a></li>
+        <li><a href="#excepciones">Sólo una semana</a></li>
+        <li><a href="#descansos">Descansos y domingos</a></li>
+        <li><a href="#reglas">Días especiales</a></li>
+        <li><a href="#noches">Noches con dos personas fijas</a></li>
+        <li><a href="#calendario">Calendario y pantalla completa</a></li>
+        <li><a href="#manuales">Turnos manuales y edición</a></li>
+        <li><a href="#generacion">Generación y confirmación</a></li>
+        <li><a href="#cobertura">Cobertura y advertencias</a></li>
+        <li><a href="#guardado">Guardado y sincronización</a></li>
+        <li><a href="#historial">Historial y respaldos</a></li>
+        <li><a href="#rutina">Rutina recomendada</a></li>
+        <li><a href="#problemas">Solución de problemas</a></li>
+        <li><a href="#tecnico">Referencia técnica y límites</a></li>
+        <li><a href="#exportar">Descargar y enviar el calendario</a></li>
+      </ol>
+    </nav>
+    <main id="contenido">
+      <section id="inicio">
+        <h2>1. Ingreso y recorrido del sistema</h2>
+        <p>Con el sistema iniciado en tu computadora, abrí <a href="http://localhost:5173/">http://localhost:5173/</a>. Ingresá el correo y la contraseña de tu cuenta y presioná <strong>Iniciar sesión</strong>. En una instalación publicada, usá la dirección que te haya proporcionado quien administra el servicio.</p>
+        <p>El menú permite acceder a <strong>Calendario, Empleados, Funciones, Tipos de turno, Días especiales, Cobertura, Propuestas y Manual de uso</strong>. En computadoras está a la izquierda; en celulares aparece arriba y se puede deslizar horizontalmente. <strong>Manual de uso</strong> permite consultar esta guía dentro del sistema.</p>
+        <p>Usá <strong>Cerrar sesión</strong> al terminar en una computadora compartida. Si la sesión vence, volvé a ingresar. Al pie del sistema y de la pantalla de ingreso está el enlace a este manual.</p>
+      </section>
+      <section id="conceptos">
+        <h2>2. Conceptos que conviene distinguir</h2>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Concepto</th><th>Qué representa</th></tr></thead>
+          <tbody>
+            <tr><td>Función o sector</td><td>El lugar o tarea que puede cubrir una persona: atención, cocina, heladería, etc.</td></tr>
+            <tr><td>Tipo de turno</td><td>Una plantilla con nombre, sector, entrada, salida y cantidad de personas necesarias.</td></tr>
+            <tr><td>Preferencia de turno</td><td>Los tipos permitidos para la asignación automática de un empleado. No asigna por sí sola un horario fijo.</td></tr>
+            <tr><td>Disponibilidad diaria</td><td>Si la persona puede trabajar ese día y dentro de qué horas y sector.</td></tr>
+            <tr><td>Turno fijo</td><td>Un horario habitual elegido para un día específico de la semana.</td></tr>
+            <tr><td>Propuesta</td><td>Un reparto generado para revisar antes de confirmarlo.</td></tr>
+            <tr><td>Turno manual</td><td>Una asignación ingresada por vos para una persona y una fecha.</td></tr>
+            <tr><td>Cambio protegido</td><td>Una edición hecha sobre una propuesta desde el calendario que se conserva al regenerar.</td></tr>
+            <tr><td>Cobertura</td><td>Cuántas personas cubren efectivamente un horario y sector frente a la cantidad requerida.</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">Configurar un empleado o un horario establece reglas para generar propuestas. No modifica automáticamente los turnos que ya estaban guardados.</p>
+      </section>
+      <section id="preparacion">
+        <h2>3. Orden para la primera configuración</h2>
+        <ol>
+          <li>Creá los sectores desde <strong>Funciones</strong>.</li>
+          <li>Creá los horarios desde <strong>Tipos de turno</strong> y definí la dotación de cada uno.</li>
+          <li>Cargá los empleados, sus sectores, preferencias, días, horarios y descansos.</li>
+          <li>Configurá domingos, feriados y cierres desde <strong>Días especiales</strong>.</li>
+          <li>Elegí el mes en <strong>Calendario</strong> y generá una propuesta.</li>
+          <li>Revisá cobertura y advertencias, ajustá lo necesario y confirmá.</li>
+        </ol>
+        <p>La cantidad indicada en cada tipo se exige habitualmente todos los días. Para cerrar ese tipo en determinados días, creá las reglas correspondientes; no alcanza con limitar los días de un empleado.</p>
+      </section>
+      <section id="sectores">
+        <h2>4. Funciones y sectores</h2>
+        <ol>
+          <li>Entrá en <strong>Funciones</strong> e ingresá un nombre y, si lo necesitás, una descripción.</li>
+          <li>Guardá la función. Podés buscarla por nombre o descripción y editarla después.</li>
+          <li>Asigná ese sector a los empleados habilitados y a los tipos de turno que lo necesitan.</li>
+        </ol>
+        <p>Un empleado puede tener varios sectores. Por ejemplo, Luján puede estar habilitada en atención y cocina, pero cada asignación cubre un único sector: un turno de cocina no cuenta como atención.</p>
+        <p>Renombrar una función mantiene sus vínculos. Si está en uso, la eliminación se bloquea: primero hay que revisar empleados y tipos asociados, incluidos los inactivos. Los turnos anteriores conservan sus datos históricos.</p>
+      </section>
+      <section id="tipos">
+        <h2>5. Crear y editar tipos de turno</h2>
+        <ol>
+          <li>Abrí <strong>Tipos de turno</strong>.</li>
+          <li>Ingresá un nombre, por ejemplo “Mañana cocina” o “Tarde-Noche”.</li>
+          <li>Elegí el sector, la hora de inicio y la hora de finalización.</li>
+          <li>Indicá cuántos empleados necesita ese turno. Para atención, podés crear mañana y tarde con dos personas cada uno.</li>
+          <li>Definí color, observaciones y estado activo; guardá.</li>
+        </ol>
+        <p>El tipo nuevo aparece en los selectores compatibles con los sectores del empleado. No está limitado a los nombres Mañana o Tarde. Dos sectores pueden tener horarios parecidos y necesidades diferentes.</p>
+        <p>Para dejar de utilizar un tipo, editalo y desactivalo. Si tiene empleados, reglas o historial asociado, puede estar bloqueada su eliminación. Cambiar la plantilla no reescribe los horarios ya asignados.</p>
+        <p class="note attention">La salida debe ser posterior a la entrada dentro del mismo día. Por ejemplo, 18:00–23:00 es válido; un turno 22:00–02:00 que cruza medianoche no está admitido en esta versión.</p>
+      </section>
+      <section id="empleados">
+        <h2>6. Empleados, estado y preferencias</h2>
+        <ol>
+          <li>En <strong>Empleados</strong>, cargá el nombre y elegí una o varias funciones.</li>
+          <li>Marcá los tipos permitidos para su asignación automática.</li>
+          <li>Configurá días y horarios como se explica en los apartados siguientes.</li>
+          <li>Si corresponde, habilitá hasta dos turnos en el mismo día y fijá un máximo de horas semanales.</li>
+          <li>Mantené marcado <strong>Activo</strong> si debe participar de nuevas asignaciones y guardá.</li>
+        </ol>
+        <p class="note attention"><strong>Sin tipos marcados significa cualquier horario compatible</strong>, no significa que la persona no trabaje. Para impedir un tipo, seleccioná expresamente los otros tipos permitidos. Para impedir un día, elegí descanso en ese día.</p>
+        <p>Los empleados anteriores pueden conservar una preferencia de mañana o tarde. La pantalla lo indica y permite pasar a la selección del catálogo. Una configuración diaria fija se aplica antes del reparto rotativo: revisá que sea coherente con lo que querés asignar.</p>
+        <p>El equipo se ordena alfabéticamente y tiene búsqueda y filtro de activos/inactivos. Las nuevas coincidencias de nombre se bloquean para evitar duplicados; los registros antiguos repetidos se advierten, pero no se fusionan.</p>
+        <p>Desactivar conserva los datos y evita nuevas asignaciones automáticas. No borra turnos históricos: si quedaron turnos futuros de esa persona, revisalos. La autorización para dos turnos no permite superposiciones ni elimina el máximo semanal.</p>
+      </section>
+      <section id="dias">
+        <h2>7. Días y horarios individuales recurrentes</h2>
+        <p>Entrá en <strong>Empleados → Editar → Días, horarios y sectores</strong> y seleccioná <strong>Repetir semanalmente</strong>. Para cada día elegí una de estas opciones:</p>
+        <ul>
+          <li><strong>Disponible para asignación automática:</strong> el generador puede elegir un tipo compatible. Sin horas indicadas, no se limita la franja; con horas, el turno debe caber completo dentro de ella. Podés limitar también el sector.</li>
+          <li><strong>Descanso / no disponible:</strong> no se generan turnos para esa persona en ese día.</li>
+          <li><strong>Un tipo del catálogo:</strong> se intenta asignar ese turno fijo. Las horas pueden personalizarse para esa persona; el sector corresponde al tipo elegido.</li>
+        </ul>
+        <p>Después de cambiar los días, presioná <strong>Guardar cambios</strong> del empleado. Elegir una opción en el formulario no guarda por sí solo.</p>
+        <h3>Ejemplo: cocina de lunes a sábado</h3>
+        <p>Habilitá cocina para la persona y asigná su turno de cocina de lunes a sábado; elegí descanso el domingo. Si el sector está cerrado para todos los domingos, configurá además ese cierre en Días especiales.</p>
+        <h3>Ejemplo: Lautaro</h3>
+        <p>Elegí Tarde-Noche para jueves y viernes, otro tipo para sábado, y configurá los demás días como descanso o disponibilidad según corresponda. No es necesario crear otra persona ni duplicar su registro.</p>
+        <p>Si las horas individuales cubren sólo parte del horario requerido por el negocio, puede seguir apareciendo una advertencia: trabajar parte de la franja no equivale a cubrirla completa.</p>
+      </section>
+      <section id="excepciones">
+        <h2>8. Configurar sólo una semana</h2>
+        <ol>
+          <li>Editá el empleado y elegí <strong>Sólo una semana</strong>.</li>
+          <li>Seleccioná la semana mediante su lunes. Si elegís otra fecha, el formulario la lleva al lunes correspondiente.</li>
+          <li>Modificá los días necesarios: turno diferente, horas, sector o descanso.</li>
+          <li>Guardá los cambios del empleado.</li>
+        </ol>
+        <p>Los días excepcionales prevalecen sobre el patrón semanal. Los días sin excepción mantienen la configuración habitual. La semana siguiente vuelve a aplicarse el patrón recurrente.</p>
+        <p>Para retirarla, elegí esa semana, pulsá <strong>Quitar excepción de esta semana</strong> y guardá. Una excepción puede habilitar un día que habitualmente era de descanso o dejar libre un día que habitualmente se trabaja.</p>
+        <p class="note">Si ya habías generado el calendario, revisá o regenerá el período. Los cambios manuales protegidos se conservan aunque después cambie una disponibilidad; si entran en conflicto, requieren revisión manual.</p>
+      </section>
+      <section id="descansos">
+        <h2>9. Descansos semanales y domingos rotativos</h2>
+        <p>El descanso individual puede establecerse en cada día del empleado o desde <strong>Descanso semanal</strong>, seleccionando la persona y los días que corresponden. Guardá la modificación. Las excepciones de una semana tienen prioridad sobre el descanso habitual.</p>
+        <p>El sistema no impone descansos por el nombre de una persona. Si alguien debe trabajar siempre los lunes, revisá que ese día no esté marcado como descanso ni tenga una excepción.</p>
+        <p>Para domingos rotativos, configurá primero los horarios y cantidades del domingo en Días especiales. El generador considera la participación dominical anterior y la carga de trabajo para repartir entre personas elegibles. <strong>Confirmar una propuesta actualiza el historial dominical sin duplicar la fecha al reconfirmar.</strong></p>
+        <p>La rotación no garantiza una alternancia exacta de uno por medio cuando existen preferencias, descansos, sectores, turnos fijos o límites de horas. Si querés una pauta exacta, configurá los días fijos o las excepciones correspondientes.</p>
+      </section>
+      <section id="reglas">
+        <h2>10. Reglas de días especiales</h2>
+        <p>Una regla puede aplicarse a <strong>un día de la semana</strong>, repitiéndose, o a <strong>una fecha puntual</strong>. Tiene nombre, estado y una lista de tipos de turno con su cantidad necesaria.</p>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Configuración</th><th>Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>Un tipo con 0 personas</td><td>Ese tipo queda cerrado para el día.</td></tr>
+            <tr><td>“El resto del personal descansa” desmarcado</td><td>Sólo cambian las cantidades indicadas; los otros tipos mantienen su dotación habitual.</td></tr>
+            <tr><td>“El resto del personal descansa” marcado</td><td>Únicamente se habilitan los tipos y cantidades indicados; los demás tipos quedan cerrados.</td></tr>
+            <tr><td>Sin tipos y con descanso del resto marcado</td><td>El día queda cerrado para todo el equipo en la generación.</td></tr>
+            <tr><td>Regla puntual y regla semanal para la misma fecha</td><td>La puntual reemplaza a la semanal para esa fecha; no se suman.</td></tr>
+          </tbody>
+        </table></div>
+        <p>Si ya existe una regla para ese día o fecha, editala y reuní allí sus necesidades. No dupliques reglas para el mismo día. Si una regla puntual reemplaza a un domingo habitual, incluí en ella todos los turnos necesarios para esa fecha.</p>
+        <h3>Domingo con dos de mañana y dos de tarde</h3>
+        <ol><li>Creá o editá la regla semanal Domingo.</li><li>Agregá mañana con 2 personas y tarde con 2 personas, en sus sectores.</li><li>Marcá el descanso del resto si no deben trabajar otros tipos.</li><li>Guardá, generá y revisá los cuatro puestos y las advertencias.</li></ol>
+        <p>Las propuestas conservan una copia de las reglas con las que se generaron. Editar o eliminar una regla no reescribe las propuestas anteriores.</p>
+      </section>
+      <section id="noches">
+        <h2>11. Noche sólo jueves, viernes y sábado, con dos empleados fijos</h2>
+        <ol>
+          <li>En <strong>Tipos de turno</strong>, creá Noche o Tarde-Noche, con horario, sector y <strong>2 empleados necesarios</strong>.</li>
+          <li>En cada una de las dos personas elegidas, habilitá ese sector y configurá el tipo como turno fijo de jueves, viernes y sábado, en <strong>Repetir semanalmente</strong>.</li>
+          <li>En <strong>Días especiales</strong>, creá o editá las reglas de lunes, martes, miércoles y domingo: agregá Noche con <strong>0 personas</strong>. Dejá desmarcado el descanso del resto si los demás tipos deben conservar su funcionamiento habitual. Si la regla ya controla otros turnos, conservá esas necesidades y revisá el efecto de su casilla de descanso.</li>
+          <li>En los demás empleados, seleccioná expresamente sus tipos permitidos y excluí Noche. No dejes la selección vacía, porque eso admite cualquier tipo compatible.</li>
+          <li>Revisá que las reglas de jueves, viernes y sábado, y las fechas especiales, no cierren Noche ni cambien su cantidad de 2.</li>
+          <li>Generá el mes, comprobá los días y las dos personas y confirmá. Revisá por separado cualquier noche anterior ingresada manualmente.</li>
+        </ol>
+        <p>Si una de las dos personas tiene descanso, está inactiva o supera su máximo semanal, se advierte la falta de cobertura. Al excluir Noche para el resto, no se los utiliza automáticamente para reemplazarla. Los otros días de las dos personas pueden conservar sus demás horarios.</p>
+      </section>
+      <section id="calendario">
+        <h2>12. Calendario y pantalla completa</h2>
+        <ul>
+          <li><strong>Mes a planificar:</strong> selecciona el mes que querés consultar o generar.</li>
+          <li><strong>Vista:</strong> alterna entre mes completo y semana. En pantallas pequeñas se inicia en semana.</li>
+          <li><strong>Flechas:</strong> avanzan o retroceden según la vista. <strong>Hoy</strong> vuelve al período actual.</li>
+          <li><strong>Función:</strong> permite revisar un sector. Es un filtro de visualización: generar el mes sigue abarcando todos los sectores.</li>
+        </ul>
+        <p>Las filas muestran los empleados, agrupados por funciones, incluidos los inactivos identificados. Las columnas son los días. Cada tarjeta indica horario, tipo, sector y estado: manual, propuesta o confirmado. Un cambio hecho sobre una propuesta se identifica como <strong>Cambio protegido</strong>. Los descansos se muestran en sus celdas.</p>
+        <p>En <strong>Pantalla completa</strong>, la tabla utiliza el alto disponible. Podés desplazarte verticalmente entre empleados y horizontalmente entre días; los encabezados y la columna de empleados quedan fijos. La vista mensual requiere desplazamiento para conservar la legibilidad.</p>
+        <p>El formulario manual y la cobertura siguen debajo de la tabla. Al pulsar Editar horario o + Turno, el sistema lleva al formulario. Salí con el botón de pantalla completa o con Escape; según el navegador se utiliza el modo nativo o una vista ampliada dentro de la página.</p>
+      </section>
+      <section id="manuales">
+        <h2>13. Asignar y modificar turnos manualmente</h2>
+        <h3>Agregar una asignación</h3>
+        <ol><li>Desde una celda del calendario, pulsá <strong>+ Turno</strong>, o utilizá <strong>Agregar turno manual</strong>.</li><li>Elegí empleado, fecha, tipo y horas. Si no usás un tipo y la persona tiene varios sectores, elegí el sector efectivo.</li><li>Agregá observaciones o indicá que es parcial, si corresponde.</li><li>Presioná <strong>Agregar turno</strong> y verificá el resultado en la fecha elegida.</li></ol>
+        <h3>Cambiar un turno existente</h3>
+        <p>Los selectores de una tarjeta permiten cambiar empleado o tipo. Para personalizar entrada y salida, pulsá <strong>Editar horario</strong> o <strong>Editar</strong>, revisá el formulario y guardá. Cambiar de tipo desde el selector adopta el horario del nuevo tipo. Para cancelar un formulario, utilizá <strong>Cancelar edición</strong>.</p>
+        <p>En una propuesta, la edición se guarda y queda protegida al regenerar; la propuesta vuelve a estar pendiente de confirmación. En un turno manual independiente se actualiza esa asignación. La fecha de un turno generado no se cambia desde ese formulario.</p>
+        <p>Se rechazan horas inválidas, personas inactivas, sectores no habilitados, descansos, horarios fuera de disponibilidad, superposiciones, jornadas dobles no autorizadas, exceso semanal y conflictos con las reglas especiales aplicables.</p>
+        <p class="note attention">Eliminar un turno manual quita esa asignación concreta y requiere confirmación. No lo uses para limpiar pruebas en bloque. El sistema no ofrece aquí una eliminación individual equivalente para las tarjetas de propuesta.</p>
+      </section>
+      <section id="generacion">
+        <h2>14. Generar, revisar y confirmar propuestas</h2>
+        <ol><li>Elegí el mes y presioná <strong>Generar mes completo</strong>, desde Calendario o Propuestas.</li><li>Esperá a que termine. La generación crea una propuesta guardada, todavía pendiente de confirmación.</li><li>Revisá las asignaciones, los descansos y las advertencias por día y sector.</li><li>Hacé los ajustes necesarios desde el calendario.</li><li>Entrá en <strong>Revisar y confirmar</strong> o Propuestas y confirmá cuando el reparto sea el que necesitás.</li></ol>
+        <p>El generador reserva turnos fijos, conserva asignaciones manuales y cambios protegidos, y reparte lo demás entre personas compatibles. Considera disponibilidad, sector, preferencias, carga de trabajo, domingos y límite semanal. Si no puede cubrir un puesto, lo advierte; no garantiza que toda combinación de restricciones tenga solución.</p>
+        <p>Generar de nuevo crea otra propuesta y mantiene las anteriores. Para cada fecha se muestra la más reciente que la incluye; una propuesta semanal más nueva puede reemplazar parte de un mes. No se permite editar o confirmar una propuesta que ya fue reemplazada en las fechas afectadas.</p>
+        <p>Confirmar registra el estado de revisión y el historial dominical. No envía mensajes al personal ni publica el calendario en un servicio externo. La confirmación no sustituye tu revisión de las alertas.</p>
+        <p class="note">Guardar una propuesta y confirmarla son cosas distintas: una propuesta pendiente ya está guardada. Confirmarla indica que terminaste de revisarla. Las modificaciones posteriores pueden requerir confirmación nuevamente.</p>
+      </section>
+      <section id="cobertura">
+        <h2>15. Cobertura y advertencias</h2>
+        <p><strong>Cobertura por función</strong> compara, por día y tipo, cuántas personas cubren toda la franja frente a las requeridas. Un turno más corto puede dejar parte de la demanda sin cubrir. Los empleados de otro sector no completan ese puesto.</p>
+        <p>La pestaña <strong>Cobertura</strong> muestra quién está asignado por fecha y bloques horarios. Para comprobar la dotación exigida de cada tipo, usá también el panel del calendario: ver una persona en una hora no significa cubrir el turno completo.</p>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Advertencia</th><th>Qué revisar</th></tr></thead>
+          <tbody>
+            <tr><td>TURNO SIN CUBRIR</td><td>La cantidad requerida, empleados activos, sectores, tipos permitidos, descansos y límites de horas.</td></tr>
+            <tr><td>Turno fijo no aplicado</td><td>Tipo inactivo o eliminado, sector incompatible, cierre del día, solapamiento o máximo semanal.</td></tr>
+            <tr><td>Descanso configurado o disponibilidad incompatible</td><td>Un turno anterior conservado puede contradecir una regla modificada después.</td></tr>
+            <tr><td>Superposición o exceso de horas en turnos conservados</td><td>Revisá las asignaciones anteriores manualmente; se preservan para no sobrescribir tus decisiones.</td></tr>
+            <tr><td>Turno cerrado</td><td>Es un día sin demanda para ese tipo según la regla; no equivale a falta de personal.</td></tr>
+          </tbody>
+        </table></div>
+        <p>Los estados completo, incompleto o sin cobertura se calculan sobre la configuración aplicable. Cuando existan reglas guardadas dentro de una propuesta, la cobertura usa esa copia para no reinterpretar el pasado con reglas nuevas.</p>
+      </section>
+      <section id="guardado">
+        <h2>16. Guardado, recarga y sincronización</h2>
+        <p>Con Firebase configurado y disponible, los cambios aceptados por el servidor se guardan allí. Si hay un error de lectura o de guardado, el sistema muestra un mensaje: verificá la conexión y volvé a intentar. No tomes un mensaje de error como confirmación de guardado.</p>
+        <p class="note attention">Si aparece <strong>Modo de prueba: los cambios se guardan sólo en memoria</strong>, recargar el navegador no reinicia esa memoria, pero reiniciar el servidor sí puede perder esos datos. Ese modo no sirve como almacenamiento definitivo.</p>
+        <p>El tablero se actualiza después de las operaciones propias, cada 30 segundos mientras la ventana está visible y al volver a ella. Los cambios de otra computadora no necesariamente aparecen en el mismo instante. El servidor valida las asignaciones para rechazar conflictos concurrentes.</p>
+        <p>Antes de cerrar, terminá de guardar los formularios. Los cambios que todavía están en el formulario no son documentos guardados y pueden perderse al recargar. Si un dato no aparece después de guardar, revisá el mes, el sector, el filtro de estado y cualquier mensaje de error.</p>
+      </section>
+      <section id="historial">
+        <h2>17. Historial, desactivación y respaldos</h2>
+        <p>Desactivá empleados o tipos que ya no se utilizan. Su historial permanece disponible y las referencias impiden algunos borrados. La desactivación no cancela automáticamente los turnos futuros que ya tenían: revisalos en el calendario.</p>
+        <p>La limpieza de datos de prueba debe hacerse con inventario real, respaldo verificado y listado exacto de registros y relaciones. Un nombre extraño no demuestra que sea una prueba. No se deben borrar empleados reales ni historial legítimo.</p>
+        <p>El proyecto incluye una herramienta técnica de inventario y exportación de sólo lectura. Su ejecución sobre Firebase real requiere autorización específica; no se ha realizado una limpieza automática. Antes de borrar, además del respaldo, hay que comprobar la posibilidad de restauración y aprobar los IDs concretos.</p>
+        <p>Imprimir o guardar este manual como PDF sólo guarda documentación: no crea una copia de empleados ni calendarios.</p>
+      </section>
+      <section id="rutina">
+        <h2>18. Rutina de trabajo recomendada</h2>
+        <h3>Antes de generar un mes</h3>
+        <ol><li>Revisá altas y bajas de empleados y sectores habilitados.</li><li>Actualizá tipos activos, horarios y dotaciones.</li><li>Ingresá vacaciones, descansos y cambios de disponibilidad mediante reglas recurrentes o excepciones semanales.</li><li>Revisá domingos, feriados y días de cierre.</li><li>Generá y revisá cada sector, especialmente los días con menos personas disponibles.</li><li>Confirmá después de corregir o evaluar las advertencias.</li></ol>
+        <h3>Si cambia algo durante la semana</h3>
+        <p>Para una necesidad puntual, editá el turno del calendario. Para un cambio habitual, actualizá la configuración del empleado. Para sólo esa semana, usá una excepción. Si regenerás, recordá que los cambios protegidos seguirán vigentes.</p>
+      </section>
+      <section id="problemas">
+        <h2>19. Solución de problemas frecuentes</h2>
+        <h3>No aparece un tipo nuevo en un empleado</h3>
+        <p>Comprobá que se haya guardado, esté activo y pertenezca a una función habilitada para esa persona. Si cambiaste funciones, revisá también las preferencias anteriores. Esperá la actualización o recargá después de guardar el formulario.</p>
+        <h3>Un empleado aparece pero no recibe turnos</h3>
+        <p>Revisá estado activo, sectores, días disponibles, preferencias, descansos, excepciones y máximo semanal. Que una persona pueda trabajar no garantiza un turno todos los días si la demanda es menor que el equipo.</p>
+        <h3>Una noche aparece en un día no deseado</h3>
+        <p>Revisá la dotación del tipo y las reglas que lo cierran. Limitá las preferencias del resto del personal. Si se trata de una asignación manual o protegida anterior, no desaparecerá por regenerar: revisala directamente.</p>
+        <h3>Falta cobertura aunque hay empleados</h3>
+        <p>Podrían estar disponibles para otro sector, para un horario más corto o tener límites y descansos. Comprobá que la entrada y salida cubran toda la franja y que las reglas no sean incompatibles.</p>
+        <h3>Se rechaza una modificación manual</h3>
+        <p>Leé el mensaje: puede haber superposición, descanso, sector incompatible, falta de autorización para otro turno, exceso semanal o una propuesta más reciente. Actualizá la vista y corregí la causa antes de reintentar.</p>
+        <h3>No se puede eliminar un empleado o tipo</h3>
+        <p>Puede tener historial o referencias. Usá desactivar. No borres documentos desde Firebase para sortear la protección sin inventario y respaldo.</p>
+        <h3>La pantalla completa se ve desactualizada</h3>
+        <p>Salí de la vista ampliada, guardá cualquier formulario pendiente y recargá con <strong>Ctrl + F5</strong> en Windows. Volvé a ampliar. Para mover el mes, utilizá la barra horizontal de la tabla; para recorrer el equipo, la vertical interior.</p>
+        <h3>No abre el sistema o no carga los datos</h3>
+        <p>En uso local, verificá que sigan iniciados la interfaz y el servidor. Si aparece un error de conexión con Firebase, pedí revisar la configuración y los permisos. No reinicies para resolverlo si tenés datos importantes únicamente en memoria sin exportar.</p>
+      </section>
+      <section id="tecnico">
+        <h2>20. Referencia técnica y límites actuales</h2>
+        <p>La interfaz está desarrollada con React y Vite; el servidor utiliza Node.js y Express, autenticación mediante JWT y Firebase Firestore como almacenamiento principal.</p>
+        <ul>
+          <li><strong>Inicio local:</strong> en la carpeta del proyecto, con las dependencias y el entorno configurados, ejecutar <code>npm run dev</code>. La interfaz utiliza normalmente el puerto 5173 y la API el 4000.</li>
+          <li><strong>Verificación:</strong> <code>npm test</code> ejecuta las pruebas de backend; <code>npm run build</code> compila la interfaz. Las pruebas automatizadas no equivalen a haber verificado el Firebase real.</li>
+          <li><strong>Configuración técnica:</strong> las instrucciones de credenciales, producción y variables de entorno están en <code>README.md</code> y <code>.env.example</code> del proyecto. No compartas archivos privados de credenciales al entregar este manual.</li>
+          <li><strong>Documentación:</strong> este archivo está en <code>web/public/manual.html</code>, se incluye en la compilación y se puede abrir sin iniciar sesión. No contiene credenciales reales.</li>
+          <li><strong>Registros principales:</strong> empleados, tipos de turno, sectores, turnos manuales, propuestas, historial dominical, días especiales y usuarios.</li>
+        </ul>
+        <p>El generador usa prioridades y restricciones, no una garantía de encontrar la mejor distribución para cualquier caso posible. Los horarios no cruzan medianoche; la sincronización entre ventanas es periódica; el mes conserva desplazamiento horizontal; confirmar no envía avisos al personal. Las propuestas existentes no se reescriben al cambiar catálogos o disponibilidades.</p>
+        <p>La copia y validación de datos reales, la limpieza autorizada y la publicación son operaciones separadas del uso normal y de la documentación.</p>
+      </section>
+      <section id="exportar">
+        <h2>21. Descargar y enviar el calendario generado</h2>
+        <ol>
+          <li>En <strong>Calendario</strong>, elegí el mes o la semana y el sector que querés entregar. El archivo respeta ese filtro y no mezcla las asignaciones de otros sectores.</li>
+          <li>Pulsá <strong>Descargar PDF</strong> para obtener un documento listo para imprimir o adjuntar. El mes se organiza por semanas y se divide en páginas para incluir todo el equipo.</li>
+          <li>Pulsá <strong>Descargar CSV / Excel</strong> para obtener una planilla CSV compatible con Excel, con horarios, descansos, observaciones y estados.</li>
+          <li>Para enviar el PDF, pulsá <strong>Compartir PDF</strong>, esperá a que se prepare y elegí <strong>Elegir aplicación y compartir</strong>. Seleccioná el destino y completá el envío en tu dispositivo.</li>
+        </ol>
+        <p>El PDF identifica período, sector, estado de confirmación y fecha de preparación. Incluye empleados, fechas, horas, tipos, sectores, turnos manuales, cambios protegidos, descansos y advertencias. Las propuestas pendientes se identifican como <strong>PROPUESTA SIN CONFIRMAR</strong>.</p>
+        <p>Compartir archivos depende del navegador y del dispositivo. Si no se admite, descargá el PDF y adjuntalo desde WhatsApp, correo u otra aplicación. No se eligen destinatarios ni se envían mensajes automáticamente. Cancelar el menú de envío no modifica los turnos.</p>
+        <p>El archivo es una copia del momento en que se preparó: si hacés cambios, prepará uno nuevo. No reemplaza el respaldo de Firebase. Un período sin propuesta ni turnos no habilita la exportación. La guía se puede consultar desde <strong>Manual de uso</strong> en el menú del sistema.</p>
+      </section>
+    </main>
+  </div>
+  <footer><strong>Vanina Coria · 2026 · ALFHA Soluciones Digitales</strong><br>Gracias por confiar en nosotros.</footer>
+</body>
+</html>
