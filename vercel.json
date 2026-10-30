@@ -1,8 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" },
-    { "source": "/manual.html", "destination": "/manual.html" },
-    { "source": "/((?!api/|manual.html).*)", "destination": "/index.html" }
-  ]
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/manual.html",
+      "destination": "/manual.html"
+    },
+    {
+      "source": "/((?!api/|manual.html).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30
+    }
+  }
 }

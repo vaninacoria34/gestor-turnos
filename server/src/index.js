@@ -1009,6 +1009,10 @@ app.use((error, req, res, next) => {
 
 async function startServer() {
   await ensureSeedData();
+  if (process.env.VERCEL) {
+    // En Vercel Functions no hay que abrir un puerto: el runtime maneja las peticiones.
+    return app;
+  }
   return app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
   });
